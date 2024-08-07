@@ -1,0 +1,33 @@
+pip install python-constraint
+
+from constraint import Problem, AllDifferentConstraint
+
+
+problem = Problem()
+rows = range(8)
+columns = range(8)
+problem.addVariables(rows, columns)
+
+
+problem.addConstraint(AllDifferentConstraint(), rows)
+def diagonal_constraint(*queens):
+    for i in range(len(queens)):
+        for j in range(i+1,len(queens)):
+            if abs(queens[i]-queens[j])==j-i:
+                return False
+    return True
+problem.addConstraint(diagonal_constraint, rows)
+
+
+solutions = problem.getSolutions()
+
+
+if solutions:
+    solution = solutions[0]
+    board = [['.'] * 8 for _ in range(8)]
+    for row,column in solution.items():
+        board[row][column]='Q'
+    for row in board:
+        print('  '.join(row))
+else:
+    print("No solution found.")
