@@ -1,33 +1,45 @@
 pip install python-constraint
 
+
 from constraint import Problem, AllDifferentConstraint
 
+specific_solution = {
+    0: 3,  # Row 0, Column 3
+    1: 1,  # Row 1, Column 1
+    2: 4,  # Row 2, Column 4
+    3: 7,  # Row 3, Column 7
+    4: 5,  # Row 4, Column 5
+    5: 0,  # Row 5, Column 0
+    6: 2,  # Row 6, Column 2
+    7: 6   # Row 7, Column 6
+}
 
 problem = Problem()
 rows = range(8)
 columns = range(8)
+
 problem.addVariables(rows, columns)
 
-
 problem.addConstraint(AllDifferentConstraint(), rows)
+
 def diagonal_constraint(*queens):
+    """Ensure no two queens are on the same diagonal."""
     for i in range(len(queens)):
-        for j in range(i+1,len(queens)):
-            if abs(queens[i]-queens[j])==j-i:
+        for j in range(i + 1, len(queens)):
+            if abs(queens[i] - queens[j]) == j - i:
                 return False
     return True
-problem.addConstraint(diagonal_constraint, rows)
 
+problem.addConstraint(diagonal_constraint, rows)
 
 solutions = problem.getSolutions()
 
-
-if solutions:
-    solution = solutions[0]
+if specific_solution in solutions:
+    print("The specific solution is valid and its board configuration is:")
     board = [['.'] * 8 for _ in range(8)]
-    for row,column in solution.items():
-        board[row][column]='Q'
+    for row, column in specific_solution.items():
+        board[row][column] = 'Q'
     for row in board:
         print('  '.join(row))
 else:
-    print("No solution found.")
+    print("The specific solution is not found in the computed solutions.")
